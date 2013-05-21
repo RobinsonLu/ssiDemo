@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.FunctionRoleMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, function_id, role_id
+	</sql>	
+
+	<select id="get" resultType="Role">
+		select
+		<include refid="columns" />
+		from function_role	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Role">
+		update function_role
+		<set>
+			<if test="function_id != null">function_id = #{function_id}</if>
+			<if test="role_id != null">role_id = #{role_id}</if>
+		</set>
+		where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Role" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into function_role
+		(function_id, role_id)
+		values
+		(#{function_id}, #{role_id})
+	</insert>
+	
+	<resultMap type="Role" id="allRole">
+		<result property="id" column="id"/>
+		<association property="function" column="function_id"
+			select="cn.haohaowo.dao.mybatis.FunctionMapper.get"/>
+		<association property="role" column="role_id"
+			select="cn.haohaowo.dao.mybatis.RoleMapper.get"/>
+	</resultMap>
+</mapper>

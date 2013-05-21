@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.InfoUpdateMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, associate_id, hr_id, address, phone, email, status
+	</sql>	
+
+	<select id="get" resultType="Role">
+		select
+		<include refid="columns" />
+		from info_updates	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Role">
+		update info_updates
+		<set>
+			<if test="associate_id != null">associate_id = #{associate_id}</if>
+			<if test="hr_id != null">hr_id = #{hr_id}</if>
+			<if test="address != null">address = #{address}</if>
+			<if test="phone != null">phone = #{phone}</if>
+			<if test="email != null">email = #{email}</if>
+			<if test="status != null">status = #{status}</if>
+		</set>
+		where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Role" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into info_updates
+		(associate_id, hr_id, address, phone, email, status)
+		values
+		(#{associate_id}, #{hr_id}, #{address}, #{phone}, #{email}, #{status})
+	</insert>
+	
+	<select id="getAllInfoUpdateByAssociateId" resultMap="allInfoUpdate">
+		select * from info_updates i_u where i_u.associate_id = #{associate_id}
+	</select>
+	
+	<select id="getAllInfoUpdateByHrId" resultMap="allInfoUpdate">
+		select * from info_updates i_u where i_u.hr_id = #{hr_id}
+	</select>
+	
+	<resultMap type="InfoUpdate" id="allInfoUpdate">
+		<result property="id" column="id"/>
+		<result property="address" column="address"/>
+		<result property="phone" column="phone"/>
+		<result property="email" column="email"/>
+		<result property="status" column="status"/>
+		<association property="associateByAssociateId" column="associate_id"
+			select="cn.haohaowo.dao.mybatis.AssociateMapper.get"/>
+		<association property="associateByHrId" column="associateByHrId"
+			select="cn.haohaowo.dao.mybatis.AssociateMapper.get"/>
+	</resultMap>
+</mapper>

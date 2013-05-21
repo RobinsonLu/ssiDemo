@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.UserRoleMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, user_id, role_id
+	</sql>	
+
+	<select id="get" resultType="UserRole">
+		select
+		<include refid="columns" />
+		from user_role	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="UserRole">
+		update user_role
+		<set>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="role_id != null">role_id = #{role_id},</if>
+		</set>			
+		where id = #{id}	
+	</update>
+	
+	<insert id = "insert" parameterType= "UserRole" useGeneratedKeys = "true"
+		keyProperty="id">
+		insert into user_role
+		(user_id, role_id)
+		values
+		(#{user_id}, #{role_id})
+	</insert>
+	
+	<select id="getUserRoleByUserId" resultMap="allUseRole">
+		select
+		<include refid="columns" />
+		from user_role u_r
+		where u_r.user_id = #{user_id}	
+	</select>
+	
+	<select id="getUserRoleByRoleId" resultMap="allUseRole">
+		select
+		<include refid="columns" />
+		from user_role u_r
+		where u_r.role_id = #{role_id}	
+	</select>
+	
+	<resultMap id="allUseRole" type="UserRole">
+		<result property="id" column="id"/>
+		<association property="role" javaType="Role" column="role_id"
+			select="cn.haohaowo.dao.mybatis.RoleMapper.get"/>
+		<association property="user" javaType="User" column="user_id" 
+			select="cn.haohaowo.dao.mybatis.UserMapper.get"/>
+	</resultMap>
+	
+</mapper>

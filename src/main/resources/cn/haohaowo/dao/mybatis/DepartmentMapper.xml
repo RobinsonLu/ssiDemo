@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.DepartmentMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, name
+	</sql>	
+
+	<select id="get" resultType="Department">
+		select
+		<include refid="columns" />
+		from departments	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Department">
+		update departments set name = #{name} where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Department" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into departments
+		(name)
+		values
+		(#{name})
+	</insert>
+	
+	<resultMap type="Department" id="allDepartment">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<collection property="associates" javaType="ArrayList" ofType="Associate"
+			select="cn.haohaowo.dao.mybatis.AssociateMapper.getAssociateByDepartmentId"/>
+	</resultMap>
+</mapper>

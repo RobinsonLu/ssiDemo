@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.FunctionMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, name
+	</sql>	
+
+	<select id="get" resultType="Function">
+		select
+		<include refid="columns" />
+		from functions	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Function">
+		update functions set name = #{name} where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Function" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into functions
+		(name)
+		values
+		(#{name})
+	</insert>
+	
+	<resultMap type="Function" id="allFunction">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<collection property="roles" javaType="ArrayList" ofType="FunctionRole" column="id"
+			select="cn.haohaowo.dao.mybatis.FunctionRoleMapper.getFunctionRoleByFunctionId"/>
+	</resultMap>
+</mapper>

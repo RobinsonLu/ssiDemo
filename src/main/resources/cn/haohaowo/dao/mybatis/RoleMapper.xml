@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.RoleMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, name
+	</sql>	
+
+	<select id="get" resultType="Role">
+		select
+		<include refid="columns" />
+		from roles	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Role">
+		update roles set name = #{name} where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Role" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into roles
+		(name)
+		values
+		(#{name})
+	</insert>
+	
+	<resultMap type="Role" id="allRole">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<collection property="users" javaType="ArrayList" ofType="UserRole"
+			select="cn.haohaowo.dao.mybatis.UserRoleMapper.getUserRoleByRoleId"/>
+	</resultMap>
+</mapper>
