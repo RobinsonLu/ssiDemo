@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.SalaryGroupMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, level, base, bonus, other
+	</sql>	
+
+	<select id="get" resultType="SalaryGroup">
+		select
+		<include refid="columns" />
+		from salary_groups	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="SalaryGroup">
+		update salary_groups
+		<set>
+			<if test="level != null">level = #{level}</if>
+			<if test="base != null">base = #{base}</if>
+			<if test="bonus != null">bonus = #{bonus}</if>
+			<if test="other != null">other = #{other}</if>
+		</set> 
+		where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="SalaryGroup" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into salary_groups
+		(level, base, bonus, other)
+		values
+		(#{level}, #{base}, #{bonus}, #{other})
+	</insert>	
+	
+	<resultMap id="allSalaryGroup" type="SalaryGroup">
+		<result property="id" column="id"/>
+		<result property="level" column="level"/>
+		<result property="base" column="base"/>
+		<result property="bonus" column="bonus"/>
+		<result property="other" column="other"/>
+		<collection property="associates" column="id" javaType="ArrayList"
+		ofType="Associate"/>
+	</resultMap>
+</mapper>

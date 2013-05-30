@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.AccountMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, no, status, associate_id
+	</sql>	
+
+	<select id="get" resultType="Account">
+		select
+		<include refid="columns" />
+		from accounts	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Account">
+		update accounts 
+		<set>
+			<if test="no != null">no = #{no}</if>
+			<if test="status != null">status = #{status}</if>
+			<if test="associate_id != associate_id">associate_id = #{associate_id}</if>
+		</set>
+		where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Account" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into accounts
+		(no, status, associate_id)
+		values
+		(#{no}, #{status}, #{associate_id})
+	</insert>
+	
+	<resultMap id="allAccount" type="Account">
+		<result property="id" column="id"/>
+		<result property="no" column="no"/>
+		<result property="status" column="status"/>
+		<association property="associate" column="associate_id"
+			select="cn.haohaowo.dao.mybatis.AssociateMapper.get"/>
+	</resultMap>
+</mapper>

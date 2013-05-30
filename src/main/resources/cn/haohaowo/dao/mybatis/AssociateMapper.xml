@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.haohaowo.dao.mybatis.AssociateMapper">
+	<cache />
+	
+	<sql id="columns">
+		id, manager_id, salary_group_id, department_id, name, birthday,
+		sex, address, phone, email, status, id_number, type, as_number
+	</sql>	
+
+	<select id="get" resultType="Associate">
+		select
+		<include refid="columns" />
+		from associates	
+		where id = #{pk}	
+	</select>
+	
+	<update id="updateById" parameterType="Associate">
+		update associates
+		<set>
+			<if test="manager_id != null">manager_id = ${manager_id}</if>
+			<if test="salary_group_id != null">salary_group_id = #{salary_group_id}</if>
+			<if test="department_id != null">department_id = #{department_id}</if>
+			<if test="name != null">name = #{name}</if>
+			<if test="birthday != null">birthday = #{birthday}</if>
+			<if test="sex != null">sex = #{sex}</if>
+			<if test="address != null">address = #{address}</if>
+			<if test="phone != null">phone = #{phone}</if>
+			<if test="email != null">email = #{email}</if>
+			<if test="status != null">status = #{status}</if>
+			<if test="id_number != null">id_number = #{id_number}</if>
+			<if test="type != null">type = #{type}</if>
+			<if test="as_number != null">as_number = #{as_number}</if>
+		</set> 
+		where id = #{id}	
+	</update>
+	
+	<insert id="insert" parameterType="Associate" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into associates
+		(manager_id, salary_group_id, department_id, name, birthday,
+		sex, address, phone, email, status, id_number, type, as_number)
+		values
+		(#{manager_id}, #{salary_group_id}, #{department_id}, #{name}, #{birthday},
+		#{sex}, #{address}, #{phone}, #{email}, #{status}, #{id_number}, #{type}, #{as_number})
+	</insert>
+	
+	<select id="getAllAssociateByManagerId" resultMap="allAccount">
+		select * from associates a where a.manager_id = #{manager_id}
+	</select>
+	
+	<resultMap id="allAccount" type="Associate">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="birthday" column="birthday"/>
+		<result property="sex" column="sex"/>
+		<result property="address" column="address"/>
+		<result property="phone" column="phone"/>
+		<result property="email" column="email"/>
+		<result property="status" column="status"/>
+		<result property="id_number" column="id_number"/>
+		<result property="type" column="type"/>
+		<result property="as_number" column="as_number"/>
+		<association property="associate" column="manage_id"/>
+		<association property="salaryGroup" column="salary_group_id"/>
+		<association property="department" column="department_id"/>
+		<collection property="leavesForManageId" javaType="ArrayList" ofType="Leave" column="id" 
+			select="cn.haohaowo.dao.mybatis.LeaveMapper.getAllLeaveByManagerId"/>
+			
+		<collection property="leavesForAssociateId" javaType="ArrayList" ofType="Leave" column="id"
+			select="cn.haohaowo.dao.mybatis.LeaveMapper.getAllLeaveByAssociateId"/>
+			
+		<collection property="infoUpdatesForAssociateId" javaType="ArrayList" ofType="InfoUpdate" column="id"
+			select="cn.haohaowo.dao.mybatis.InfoUpdateMapper.getAllInfoUpdateByAssociateId"/>
+			
+		<collection property="infoUpdatesForHrId" javaType="ArrayList" ofType="InfoUpdate" column="id"
+			select="cn.haohaowo.dao.mybatis.InfoUpdateMapper.getAllInfoUpdateByHrId"/>
+			
+		<collection property="associates" javaType="ArrayList" ofType="Associate" column="id"
+			select="getAllAssociateByManagerId"/>
+			
+		<collection property="salaries" javaType="ArrayList" ofType="Salary" column="id"
+			select="cn.haohaowo.dao.mybatis.SalaryMapper.getAllInfoUpdateByHrId"/>
+	</resultMap>
+</mapper>
