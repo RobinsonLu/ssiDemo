@@ -40,6 +40,6 @@ public class UserTest {
 	public void userCollectionTest() {
 		List<User> userList = userService.loadAllRoleByUserId(1);
 //		assertEquals("robinson", userList.get(0).getName());
-		assertEquals("robinson1", userList.get(0).getRoles().get(0).getRole().getName());
+		assertEquals("robinson", userList.get(0).getRoles().get(0).getRole().getName());
 	}
 }
